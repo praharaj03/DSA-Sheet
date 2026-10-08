@@ -32,10 +32,7 @@ export default function Home({ done, ready, onOpen, onReset }: Props) {
       <header className="home-head">
         <div>
           <h1 className="title">DSA Sheet</h1>
-          <p className="subtitle">
-            {TOTAL} questions across {TOPICS.length} topics, by Shradha Didi &amp; Aman Bhaiya.
-            {" "}Tick a question when you've solved it.
-          </p>
+          <p className="subtitle">Track your DSA progress across {TOPICS.length} topics.</p>
         </div>
         <div className="home-actions">
           {nextTopic && (

@@ -1544,3 +1544,40 @@ input.input {
     order: -1;
   }
 }
+
+/* ---------- avatar input ---------- */
+.avatar-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.avatar-file-input {
+  display: none;
+}
+.avatar-file-btn {
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 13px;
+  padding: 0 14px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.avatar-file-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.avatar-or {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.avatar-preview {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line-2);
+  flex-shrink: 0;
+}

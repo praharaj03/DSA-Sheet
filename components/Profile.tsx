@@ -114,10 +114,39 @@ export default function Profile({ done }: Props) {
               </div>
             </label>
             <label className="edit-label">
-              Avatar URL
+              Avatar
               {avatarDaysLeft > 0 && <span className="edit-cooldown muted">· locked {avatarDaysLeft}d</span>}
-              <input className="input" placeholder="https://i.imgur.com/..." value={form.avatarUrl} disabled={avatarDaysLeft > 0}
-                onChange={e => setForm(f => ({ ...f, avatarUrl: e.target.value }))} />
+              <div className="avatar-input-wrap">
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="avatar-file"
+                  className="avatar-file-input"
+                  disabled={avatarDaysLeft > 0}
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = ev => setForm(f => ({ ...f, avatarUrl: ev.target?.result as string }));
+                    reader.readAsDataURL(file);
+                  }}
+                />
+                <label htmlFor="avatar-file" className={`avatar-file-btn btn ${avatarDaysLeft > 0 ? "disabled" : ""}`}>
+                  📁 From device
+                </label>
+                <span className="avatar-or muted">or</span>
+                <input
+                  className="input"
+                  placeholder="Paste image URL"
+                  value={form.avatarUrl.startsWith("data:") ? "" : form.avatarUrl}
+                  disabled={avatarDaysLeft > 0}
+                  onChange={e => setForm(f => ({ ...f, avatarUrl: e.target.value }))}
+                  style={{ flex: 1, minWidth: 0 }}
+                />
+                {form.avatarUrl && (
+                  <img src={form.avatarUrl} alt="preview" className="avatar-preview" />
+                )}
+              </div>
             </label>
             <label className="edit-label">
               LeetCode
