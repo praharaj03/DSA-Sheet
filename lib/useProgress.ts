@@ -1,59 +1,88 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 
-const KEY = "dsa-tracker-progress-v1";
+const LS_KEY = "dsa-tracker-progress-v1";
 
-function save(s: Set<string>) {
+function lsLoad(): Set<string> {
   try {
-    localStorage.setItem(KEY, JSON.stringify(Array.from(s)));
-  } catch {
-    /* storage unavailable (private mode) - progress just won't persist */
-  }
+    const raw = localStorage.getItem(LS_KEY);
+    return raw ? new Set<string>(JSON.parse(raw)) : new Set();
+  } catch { return new Set(); }
+}
+
+function lsSave(s: Set<string>) {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(Array.from(s))); } catch { /* ignore */ }
 }
 
 export function useProgress() {
+  const { isSignedIn, isLoaded } = useAuth();
   const [done, setDone] = useState<Set<string>>(new Set());
   const [ready, setReady] = useState(false);
+  const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Read after mount so the static HTML and first client render match.
+  // Load progress on mount / auth change
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(KEY);
-      if (raw) setDone(new Set<string>(JSON.parse(raw)));
-    } catch {
-      /* ignore corrupted data */
+    if (!isLoaded) return;
+    if (isSignedIn) {
+      fetch("/api/progress")
+        .then((r) => r.json())
+        .then(({ done: ids }) => {
+          setDone(new Set<string>(ids));
+          setReady(true);
+        })
+        .catch(() => {
+          setDone(lsLoad());
+          setReady(true);
+        });
+    } else {
+      setDone(lsLoad());
+      setReady(true);
     }
-    setReady(true);
-  }, []);
+  }, [isLoaded, isSignedIn]);
+
+  // Debounced sync to MongoDB
+  const syncRemote = useCallback((next: Set<string>) => {
+    if (!isSignedIn) return;
+    if (syncTimer.current) clearTimeout(syncTimer.current);
+    syncTimer.current = setTimeout(() => {
+      fetch("/api/progress", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ done: Array.from(next) }),
+      }).catch(() => {});
+    }, 600);
+  }, [isSignedIn]);
+
+  const update = useCallback((updater: (prev: Set<string>) => Set<string>) => {
+    setDone((prev) => {
+      const next = updater(prev);
+      lsSave(next);
+      syncRemote(next);
+      return next;
+    });
+  }, [syncRemote]);
 
   const toggle = useCallback((id: string) => {
-    setDone((prev) => {
+    update((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      save(next);
+      if (next.has(id)) next.delete(id); else next.add(id);
       return next;
     });
-  }, []);
+  }, [update]);
 
   const setMany = useCallback((ids: string[], value: boolean) => {
-    setDone((prev) => {
+    update((prev) => {
       const next = new Set(prev);
-      for (const id of ids) {
-        if (value) next.add(id);
-        else next.delete(id);
-      }
-      save(next);
+      for (const id of ids) value ? next.add(id) : next.delete(id);
       return next;
     });
-  }, []);
+  }, [update]);
 
   const reset = useCallback(() => {
-    const empty = new Set<string>();
-    save(empty);
-    setDone(empty);
-  }, []);
+    update(() => new Set());
+  }, [update]);
 
   return { done, ready, toggle, setMany, reset };
 }

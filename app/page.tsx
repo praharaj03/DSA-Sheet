@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { UserButton } from "@clerk/nextjs";
 import Home from "@/components/Home";
 import Sidebar from "@/components/Sidebar";
 import TopicView from "@/components/TopicView";
@@ -45,6 +46,7 @@ export default function Page() {
             {ready ? done.size : 0}/{TOTAL} · {ready ? overall : 0}%
           </span>
         </div>
+        <UserButton />
       </header>
 
       <div className="layout">
