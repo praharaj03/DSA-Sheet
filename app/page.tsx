@@ -9,6 +9,7 @@ import TopicView from "@/components/TopicView";
 import Leaderboard from "@/components/Leaderboard";
 import UsernameSetup from "@/components/UsernameSetup";
 import Profile from "@/components/Profile";
+import Pricing from "@/components/Pricing";
 import { TOPICS, TOTAL, pct } from "@/lib/data";
 import { useProgress } from "@/lib/useProgress";
 
@@ -81,6 +82,8 @@ export default function Page() {
             <Leaderboard />
           ) : view === "profile" ? (
             <Profile done={done} />
+          ) : view === "pricing" ? (
+            <Pricing />
           ) : topic ? (
             <TopicView key={topic.slug} topic={topic} done={done} onToggle={toggle} onSetMany={setMany} />
           ) : (
