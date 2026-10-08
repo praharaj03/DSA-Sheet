@@ -1097,3 +1097,129 @@ input.input {
   margin-top: 4px;
   padding-left: 24px;
 }
+
+/* ---------- prefix inputs ---------- */
+.prefix-input-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--panel-2);
+  border: 1px solid var(--line-2);
+  border-radius: 9px;
+  overflow: hidden;
+  height: 38px;
+}
+.prefix-input-wrap:focus-within {
+  border-color: var(--accent);
+}
+.prefix-at,
+.prefix-text {
+  padding: 0 10px;
+  color: var(--mute);
+  font-size: 13px;
+  white-space: nowrap;
+  border-right: 1px solid var(--line-2);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.prefix-input {
+  flex: 1;
+  border: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  height: 100% !important;
+  min-width: 0;
+}
+
+/* ---------- responsive: toolbar ---------- */
+@media (max-width: 768px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar .input,
+  .toolbar .select,
+  .toolbar .segmented {
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+  }
+  .toolbar .segmented {
+    display: flex;
+  }
+  .toolbar .seg {
+    flex: 1;
+  }
+  .bulk {
+    margin-left: 0;
+    justify-content: flex-end;
+  }
+  .q-table .col-companies,
+  .q-table .col-remark {
+    display: none;
+  }
+  .q-table .col-links .pill-link:last-child {
+    display: none;
+  }
+}
+
+/* ---------- responsive: profile ---------- */
+@media (max-width: 640px) {
+  .profile-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .profile-name-row {
+    justify-content: center;
+  }
+  .profile-links {
+    justify-content: center;
+  }
+  .profile-edit-grid {
+    grid-template-columns: 1fr;
+  }
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .stat:nth-child(5) {
+    grid-column: span 2;
+  }
+  .badges-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- responsive: leaderboard ---------- */
+@media (max-width: 640px) {
+  .lb-table th:nth-child(4),
+  .lb-table td:nth-child(4),
+  .lb-table th:nth-child(5),
+  .lb-table td:nth-child(5) {
+    display: none;
+  }
+  .lb-tabs {
+    width: 100%;
+  }
+  .lb-tabs .seg {
+    flex: 1;
+    font-size: 12px;
+    padding: 0 6px;
+  }
+}
+
+/* ---------- responsive: calendar ---------- */
+@media (max-width: 640px) {
+  .cal-wrap {
+    padding: 14px 12px;
+  }
+  .cal-grid {
+    grid-auto-columns: 11px;
+    gap: 2px;
+  }
+  .cal-cell {
+    width: 11px;
+    height: 11px;
+  }
+}

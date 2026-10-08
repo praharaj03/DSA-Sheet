@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", display: "swap" });
@@ -16,7 +17,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <ClerkProvider>
       <html lang="en" className={`${display.variable} ${body.variable}`}>
-        <body>{children}</body>
+        <body>
+          {children}
+          <Toaster theme="dark" position="bottom-right" richColors />
+        </body>
       </html>
     </ClerkProvider>
   );

@@ -4,6 +4,7 @@ import { hueVar } from "@/lib/style";
 import { useMemo, useState } from "react";
 import { countDone, pct, type Topic } from "@/lib/data";
 import CompanyLogo from "./CompanyLogo";
+import { toast } from "sonner";
 
 type Props = {
   topic: Topic;
@@ -49,6 +50,13 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
       return a.n - b.n;
     });
   }, [topic, filter, company, query, sort, done]);
+
+  const handleToggle = (id: string, title: string) => {
+    const willBeDone = !done.has(id);
+    onToggle(id);
+    if (willBeDone) toast.success(`✓ ${title}`, { duration: 2000 });
+    else toast(`Unmarked: ${title}`, { duration: 1500 });
+  };
 
   const FILTERS: { key: Filter; label: string }[] = [
     { key: "all", label: `All ${total}` },
@@ -141,11 +149,8 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
         </select>
 
         <div className="bulk">
-          <button className="link-btn" onClick={() => onSetMany(ids, true)} disabled={doneCount === total}>
-            Mark all done
-          </button>
           <button className="link-btn" onClick={() => onSetMany(ids, false)} disabled={doneCount === 0}>
-            Clear
+            Clear all
           </button>
         </div>
       </div>
@@ -176,7 +181,7 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
                       type="checkbox"
                       className="check"
                       checked={isDone}
-                      onChange={() => onToggle(q.id)}
+                      onChange={() => handleToggle(q.id, q.title)}
                       aria-label={`Mark "${q.title}" as ${isDone ? "not done" : "done"}`}
                     />
                   </td>

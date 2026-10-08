@@ -107,29 +107,41 @@ export default function Profile({ done }: Props) {
             <label className="edit-label">
               Username
               {usernameDaysLeft > 0 && <span className="edit-cooldown muted">· locked {usernameDaysLeft}d</span>}
-              <input className="input" value={form.username} disabled={usernameDaysLeft > 0}
-                onChange={e => setForm(f => ({ ...f, username: e.target.value }))} />
+              <div className="prefix-input-wrap">
+                <span className="prefix-at">@</span>
+                <input className="input prefix-input" value={form.username} disabled={usernameDaysLeft > 0}
+                  onChange={e => setForm(f => ({ ...f, username: e.target.value }))} />
+              </div>
             </label>
             <label className="edit-label">
               Avatar URL
               {avatarDaysLeft > 0 && <span className="edit-cooldown muted">· locked {avatarDaysLeft}d</span>}
-              <input className="input" placeholder="https://..." value={form.avatarUrl} disabled={avatarDaysLeft > 0}
+              <input className="input" placeholder="https://i.imgur.com/..." value={form.avatarUrl} disabled={avatarDaysLeft > 0}
                 onChange={e => setForm(f => ({ ...f, avatarUrl: e.target.value }))} />
             </label>
             <label className="edit-label">
-              LeetCode username
-              <input className="input" placeholder="your_lc_handle" value={form.leetcode}
-                onChange={e => setForm(f => ({ ...f, leetcode: e.target.value }))} />
+              LeetCode
+              <div className="prefix-input-wrap">
+                <span className="prefix-text">leetcode.com/</span>
+                <input className="input prefix-input" placeholder="username" value={form.leetcode}
+                  onChange={e => setForm(f => ({ ...f, leetcode: e.target.value }))} />
+              </div>
             </label>
             <label className="edit-label">
-              GitHub username
-              <input className="input" placeholder="your_gh_handle" value={form.github}
-                onChange={e => setForm(f => ({ ...f, github: e.target.value }))} />
+              GitHub
+              <div className="prefix-input-wrap">
+                <span className="prefix-text">github.com/</span>
+                <input className="input prefix-input" placeholder="username" value={form.github}
+                  onChange={e => setForm(f => ({ ...f, github: e.target.value }))} />
+              </div>
             </label>
             <label className="edit-label">
-              LinkedIn username
-              <input className="input" placeholder="your_li_handle" value={form.linkedin}
-                onChange={e => setForm(f => ({ ...f, linkedin: e.target.value }))} />
+              LinkedIn
+              <div className="prefix-input-wrap">
+                <span className="prefix-text">linkedin.com/in/</span>
+                <input className="input prefix-input" placeholder="username" value={form.linkedin}
+                  onChange={e => setForm(f => ({ ...f, linkedin: e.target.value }))} />
+              </div>
             </label>
           </div>
           {saveError && <p className="setup-error">{saveError}</p>}
