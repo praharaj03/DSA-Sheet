@@ -1223,3 +1223,71 @@ input.input {
     height: 11px;
   }
 }
+
+/* ---------- nav icon ---------- */
+.nav-name-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.nav-icon {
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+.nav-item.active .nav-icon,
+.nav-item:hover .nav-icon {
+  opacity: 1;
+}
+
+/* ---------- company matcher cards ---------- */
+.cm-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+.cm-card {
+  padding: 14px 16px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.15s;
+}
+.cm-card.cm-strong { border-color: #2cbb5d44; }
+.cm-card.cm-mid    { border-color: #f39c1244; }
+.cm-card.cm-weak   { border-color: #e74c3c33; }
+.cm-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.cm-name {
+  font-weight: 600;
+  font-size: 13.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cm-pct {
+  font-weight: 700;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.cm-bar-wrap {
+  height: 5px;
+  background: var(--line);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.cm-bar-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+.cm-sub {
+  font-size: 12px;
+}

@@ -32,5 +32,9 @@ export async function GET() {
     })
     .filter(Boolean);
 
-  return NextResponse.json({ rows });
+  // Return current user's done list for company % calculation
+  const myProgress = await Progress.findOne({ userId });
+  const myDone: string[] = myProgress?.done ?? [];
+
+  return NextResponse.json({ rows, myDone });
 }

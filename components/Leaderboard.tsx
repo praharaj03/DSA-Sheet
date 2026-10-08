@@ -21,13 +21,18 @@ const TOTAL = ALL_QUESTIONS.length;
 
 export default function Leaderboard() {
   const [rows, setRows] = useState<Row[]>([]);
+  const [myDone, setMyDone] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<"rank" | "badges" | "companies">("rank");
 
   useEffect(() => {
     fetch("/api/leaderboard")
       .then((r) => r.json())
-      .then(({ rows }) => { setRows(rows ?? []); setLoading(false); });
+      .then(({ rows, myDone }) => {
+        setRows(rows ?? []);
+        setMyDone(new Set(myDone ?? []));
+        setLoading(false);
+      });
   }, []);
 
   const me = rows.find((r) => r.isMe);
@@ -129,37 +134,31 @@ export default function Leaderboard() {
       {!loading && tab === "companies" && (
         <div className="company-matcher">
           <p className="muted" style={{ marginBottom: 20 }}>
-            See which companies' full question sets you've mastered vs others on the leaderboard.
+            Your readiness for each company based on how many of their tagged questions you've solved.
           </p>
-          <div className="table-scroll">
-            <table className="table lb-table">
-              <thead>
-                <tr>
-                  <th>Company</th>
-                  <th className="num">Questions</th>
-                  {rows.slice(0, 5).map((r) => (
-                    <th key={r.userId} className="num" title={`@${r.username}`}>
-                      <Avatar url={r.avatarUrl} name={r.username} size={22} />
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {COMPANY_STATS.slice(0, 20).map(({ company, ids }) => (
-                  <tr key={company.name}>
-                    <td className="lb-company-name">{company.name}</td>
-                    <td className="num muted">{ids.length}</td>
-                    {rows.slice(0, 5).map((r) => (
-                      <td key={r.userId} className="num">
-                        {r.badges.includes("faang_ready") || r.totalSolved >= ids.length
-                          ? <span style={{ color: "var(--accent)" }}>✓</span>
-                          : <span className="faint">·</span>}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="cm-grid">
+            {COMPANY_STATS.filter(({ ids }) => ids.length >= 3).slice(0, 30).map(({ company, ids }) => {
+              const solved = ids.filter(id => myDone.has(id)).length;
+              const p = Math.round((solved / ids.length) * 100);
+              const tier = p >= 80 ? "strong" : p >= 50 ? "mid" : p >= 20 ? "weak" : "none";
+              return (
+                <div key={company.name} className={`cm-card cm-${tier}`}>
+                  <div className="cm-top">
+                    <span className="cm-name">{company.name}</span>
+                    <span className="cm-pct" style={{ color: tier === "strong" ? "var(--accent)" : tier === "mid" ? "#f39c12" : "var(--mute)" }}>
+                      {p}%
+                    </span>
+                  </div>
+                  <div className="cm-bar-wrap">
+                    <div className="cm-bar-fill" style={{
+                      width: `${p}%`,
+                      background: tier === "strong" ? "var(--accent)" : tier === "mid" ? "#f39c12" : tier === "weak" ? "#e74c3c" : "var(--line-2)"
+                    }} />
+                  </div>
+                  <div className="cm-sub muted">{solved}/{ids.length} solved</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
