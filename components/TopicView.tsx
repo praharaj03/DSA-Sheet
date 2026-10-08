@@ -13,6 +13,7 @@ type Props = {
 };
 
 type Filter = "all" | "pending" | "done";
+type Sort = "default" | "company" | "title" | "done-last";
 
 const MAX_LOGOS = 6;
 
@@ -20,6 +21,7 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [company, setCompany] = useState("");
+  const [sort, setSort] = useState<Sort>("default");
 
   const ids = useMemo(() => topic.questions.map((q) => q.id), [topic]);
   const doneCount = countDone(ids, done);
@@ -32,13 +34,21 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
     return Array.from(m.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   }, [topic]);
 
-  const rows = topic.questions.filter((q) => {
-    if (filter === "done" && !done.has(q.id)) return false;
-    if (filter === "pending" && done.has(q.id)) return false;
-    if (company && !q.companies.some((c) => c.name === company)) return false;
-    if (query && !q.title.toLowerCase().includes(query.trim().toLowerCase())) return false;
-    return true;
-  });
+  const rows = useMemo(() => {
+    const filtered = topic.questions.filter((q) => {
+      if (filter === "done" && !done.has(q.id)) return false;
+      if (filter === "pending" && done.has(q.id)) return false;
+      if (company && !q.companies.some((c) => c.name === company)) return false;
+      if (query && !q.title.toLowerCase().includes(query.trim().toLowerCase())) return false;
+      return true;
+    });
+    return [...filtered].sort((a, b) => {
+      if (sort === "title") return a.title.localeCompare(b.title);
+      if (sort === "company") return b.companies.length - a.companies.length;
+      if (sort === "done-last") return (done.has(a.id) ? 1 : 0) - (done.has(b.id) ? 1 : 0);
+      return a.n - b.n;
+    });
+  }, [topic, filter, company, query, sort, done]);
 
   const FILTERS: { key: Filter; label: string }[] = [
     { key: "all", label: `All ${total}` },
@@ -117,6 +127,18 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
             </button>
           ))}
         </div>
+
+        <select
+          className="input select"
+          value={sort}
+          onChange={(e) => setSort(e.target.value as Sort)}
+          aria-label="Sort questions"
+        >
+          <option value="default">Sort: Default</option>
+          <option value="title">Sort: A → Z</option>
+          <option value="company">Sort: Most asked</option>
+          <option value="done-last">Sort: Pending first</option>
+        </select>
 
         <div className="bulk">
           <button className="link-btn" onClick={() => onSetMany(ids, true)} disabled={doneCount === total}>
