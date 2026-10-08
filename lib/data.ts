@@ -3,10 +3,11 @@ import { parseCompanies, type Company } from "./companies";
 
 export type Question = {
   id: string;
-  n: number; // number inside its topic
+  n: number;
   title: string;
   companies: Company[];
   remark?: string;
+  link?: string;
   leetcode: string;
   gfg: string;
 };
@@ -25,15 +26,19 @@ export const TOPICS: Topic[] = SHEET.map((t, ti) => ({
   name: t.name,
   slug: slugify(t.name),
   hue: Math.round((205 + ti * (360 / SHEET.length)) % 360),
-  questions: t.rows.map(([title, companies, remark], qi) => {
+  questions: t.rows.map((row, qi) => {
+    const title = row.title;
     const q = encodeURIComponent(title);
     return {
       id: `${ti}-${qi}`,
       n: qi + 1,
       title,
-      companies: parseCompanies(companies),
-      remark,
-      leetcode: `https://leetcode.com/problemset/?search=${q}`,
+      companies: Array.isArray(row.companies)
+        ? parseCompanies(row.companies.join(" "))
+        : parseCompanies(row.companies ?? ""),
+      remark: row.remark,
+      link: row.link,
+      leetcode: row.link ?? `https://leetcode.com/problemset/?search=${q}`,
       gfg: `https://www.google.com/search?q=${q}+site%3Ageeksforgeeks.org`,
     };
   }),
