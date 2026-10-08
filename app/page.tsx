@@ -8,6 +8,7 @@ import Sidebar from "@/components/Sidebar";
 import TopicView from "@/components/TopicView";
 import Leaderboard from "@/components/Leaderboard";
 import UsernameSetup from "@/components/UsernameSetup";
+import Profile from "@/components/Profile";
 import { TOPICS, TOTAL, pct } from "@/lib/data";
 import { useProgress } from "@/lib/useProgress";
 
@@ -78,6 +79,8 @@ export default function Page() {
         <main className="main">
           {view === "leaderboard" ? (
             <Leaderboard />
+          ) : view === "profile" ? (
+            <Profile done={done} />
           ) : topic ? (
             <TopicView key={topic.slug} topic={topic} done={done} onToggle={toggle} onSetMany={setMany} />
           ) : (

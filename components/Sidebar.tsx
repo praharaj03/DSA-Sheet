@@ -28,6 +28,14 @@ export default function Sidebar({ active, done, onNavigate }: Props) {
         <span className="nav-name">🏆 Leaderboard</span>
       </button>
 
+      <button
+        className={`nav-item ${active === "profile" ? "active" : ""}`}
+        onClick={() => onNavigate("profile")}
+        aria-current={active === "profile" ? "page" : undefined}
+      >
+        <span className="nav-name">👤 Profile</span>
+      </button>
+
       <div className="nav-divider" />
 
       {TOPICS.map((t) => {
