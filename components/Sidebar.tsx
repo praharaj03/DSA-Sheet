@@ -20,6 +20,14 @@ export default function Sidebar({ active, done, onNavigate }: Props) {
         <span className="nav-name">Home</span>
       </button>
 
+      <button
+        className={`nav-item ${active === "leaderboard" ? "active" : ""}`}
+        onClick={() => onNavigate("leaderboard")}
+        aria-current={active === "leaderboard" ? "page" : undefined}
+      >
+        <span className="nav-name">🏆 Leaderboard</span>
+      </button>
+
       <div className="nav-divider" />
 
       {TOPICS.map((t) => {

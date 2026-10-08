@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { Progress } from "@/lib/models";
+import { computeStats } from "@/lib/badges";
 
 export async function GET() {
   const { userId } = await auth();
@@ -17,11 +18,13 @@ export async function PUT(req: Request) {
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { done } = await req.json();
+  const stats = computeStats(new Set<string>(done));
+
   await connectDB();
   await Progress.findOneAndUpdate(
     { userId },
-    { done, updatedAt: new Date() },
+    { done, ...stats, updatedAt: new Date() },
     { upsert: true }
   );
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, stats });
 }
