@@ -97,11 +97,34 @@ button {
   letter-spacing: -0.02em;
 }
 
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.primary-nav-item {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--mute);
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.primary-nav-item:hover,
+.primary-nav-item.active {
+  background: var(--panel-2);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
 .topbar-progress {
   display: flex;
   align-items: center;
   gap: 12px;
-  width: min(360px, 55%);
+  width: min(280px, 25%);
 }
 .topbar-progress .bar {
   flex: 1;
@@ -116,13 +139,28 @@ button {
 .layout {
   display: grid;
   grid-template-columns: 248px minmax(0, 1fr);
-  max-width: 1360px;
+  width: 95%;
+  max-width: none;
   margin: 0 auto;
 }
 
 .main {
   padding: 32px 32px 80px;
   min-width: 0;
+}
+
+.page-transition {
+  animation: page-enter 220ms ease-out both;
+}
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ---------- sidebar ---------- */
@@ -153,7 +191,7 @@ button {
   border-radius: 8px;
   padding: 8px 10px;
   color: var(--mute);
-  transition: background 0.12s, color 0.12s;
+  transition: background 0.16s ease, color 0.16s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 .nav-item:hover {
   background: var(--panel-2);
@@ -162,6 +200,11 @@ button {
 .nav-item.active {
   background: var(--panel-2);
   color: var(--ink);
+}
+.sidebar .nav-item.active {
+  background: hsl(var(--hue) 85% 48% / 0.24);
+  box-shadow: inset 3px 0 hsl(var(--hue) 95% 62%);
+  color: hsl(var(--hue) 100% 86%);
 }
 .nav-row {
   display: flex;
@@ -193,6 +236,13 @@ button {
   background: var(--accent);
   border-radius: 99px;
   transition: width 0.3s ease;
+}
+
+@media (min-width: 961px) and (hover: hover) and (pointer: fine) {
+  .sidebar .nav-item:hover {
+    transform: translateX(4px);
+    box-shadow: inset 3px 0 var(--accent);
+  }
 }
 
 /* ---------- type ---------- */
@@ -395,6 +445,8 @@ button {
 .table-scroll {
   margin-top: 14px;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--line);
   border-radius: 14px;
   background: var(--panel);
@@ -714,21 +766,27 @@ input.input {
     max-height: none;
     flex-direction: row;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
     padding: 12px 16px;
     gap: 6px;
     border-bottom: 1px solid var(--line);
+  }
+  .sidebar::-webkit-scrollbar {
+    display: none;
   }
   .nav-item {
     width: auto;
     flex: 0 0 auto;
     min-width: 108px;
+    white-space: nowrap;
     border: 1px solid var(--line);
   }
   .nav-divider {
     display: none;
   }
   .main {
-    padding: 24px 16px 64px;
+    padding: 24px clamp(16px, 3vw, 32px) 64px;
   }
   .stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -751,28 +809,142 @@ input.input {
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 760px) {
   .topbar {
-    padding: 10px 16px;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+  .brand {
+    order: 1;
   }
   .topbar-progress {
-    width: 52%;
+    order: 2;
+    flex: 1;
+    width: auto;
+    min-width: 0;
+  }
+  .topbar > :last-child {
+    order: 3;
+    flex-shrink: 0;
+  }
+  .primary-nav {
+    order: 4;
+    flex: 1 0 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    border-top: 1px solid var(--line);
+    padding-top: 6px;
+  }
+  .primary-nav::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .topbar {
+    gap: 8px 10px;
+    padding: 10px 12px;
+  }
+  .brand {
+    flex-shrink: 0;
+    font-size: clamp(16px, 5vw, 20px);
+  }
+  .topbar-progress { gap: 6px; }
+  .topbar-progress .bar {
+    min-width: 20px;
+  }
+  .topbar-text {
+    font-size: 11px;
+  }
+  .topbar > :last-child {
+    flex-shrink: 0;
+  }
+  .main {
+    padding: 20px 14px 48px;
+  }
+  .home,
+  .pricing-wrap {
+    gap: 32px;
+  }
+  .home-head {
+    align-items: stretch;
+  }
+  .home-actions,
+  .home-actions .btn {
+    width: 100%;
+  }
+  .home-foot {
+    align-items: flex-start;
+  }
+  .field-group {
+    max-width: 100%;
+  }
+  .field-head .muted {
+    font-size: 13px;
   }
   .field {
-    padding: 16px;
-    gap: 18px 20px;
+    padding: 14px;
+    gap: 18px 16px;
+  }
+  .stat {
+    padding: 16px 12px 16px 0;
+  }
+  .stat + .stat {
+    padding-left: 12px;
+  }
+  .stat:nth-child(3) {
+    padding-left: 0;
+  }
+  .stat-value {
+    font-size: 30px;
   }
   .company-row {
     grid-template-columns: 28px 1fr auto;
+    gap: 10px;
   }
   .company-row .bar {
     display: none;
+  }
+  .lb-me-card {
+    width: 100%;
+  }
+  .setup-overlay,
+  .modal-overlay {
+    place-items: center;
+    overflow-y: auto;
+    padding: 16px;
+  }
+  .setup-card {
+    padding: 28px 22px;
+  }
+  .modal-card {
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    padding: 40px 24px 28px;
+  }
+  .modal-title {
+    font-size: clamp(26px, 8vw, 32px);
+  }
+  .pricing-grid {
+    width: 100%;
+    margin-inline: auto;
+  }
+  .plan-card {
+    padding: 24px 20px;
+  }
+  .pricing-trust {
+    justify-content: flex-start;
+    gap: 14px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
+  }
+  .page-transition {
+    animation: none;
   }
 }
 
@@ -1162,6 +1334,9 @@ input.input {
   .q-table .col-links .pill-link:last-child {
     display: none;
   }
+  .q-table .q-title {
+    min-width: 220px;
+  }
 }
 
 /* ---------- responsive: profile ---------- */
@@ -1188,6 +1363,16 @@ input.input {
   }
   .badges-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .profile-card,
+  .profile-edit-card {
+    padding: 20px 16px;
+  }
+  .edit-label,
+  .prefix-input-wrap,
+  .avatar-input-wrap {
+    min-width: 0;
+    max-width: 100%;
   }
 }
 
@@ -1314,7 +1499,7 @@ input.input {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
 }
 .plan-card {
   position: relative;
@@ -1325,6 +1510,8 @@ input.input {
   border: 1px solid var(--line-2);
   border-radius: 20px;
   padding: 28px 24px;
+  height: 100%;
+  min-width: 0;
   transition: border-color 0.2s, box-shadow 0.2s;
   overflow: hidden;
 }
@@ -1343,7 +1530,6 @@ input.input {
 .plan-featured {
   border-color: var(--plan-color);
   box-shadow: 0 0 40px var(--plan-glow);
-  transform: translateY(-6px);
 }
 .plan-badge {
   position: absolute;
@@ -1359,6 +1545,7 @@ input.input {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-height: 150px;
   margin-bottom: 20px;
 }
 .plan-name {
@@ -1372,6 +1559,7 @@ input.input {
   align-items: baseline;
   gap: 6px;
   margin-top: 4px;
+  min-height: 48px;
 }
 .plan-price {
   font-family: var(--font-display), system-ui, sans-serif;
@@ -1380,8 +1568,8 @@ input.input {
   letter-spacing: -0.03em;
   line-height: 1;
 }
-.plan-period { font-size: 14px; }
-.plan-tagline { margin: 6px 0 0; font-size: 13.5px; }
+.plan-period { font-size: 14px; white-space: nowrap; }
+.plan-tagline { min-height: 40px; margin: 6px 0 0; font-size: 13.5px; }
 .plan-divider {
   height: 1px;
   background: var(--line);
@@ -1407,6 +1595,7 @@ input.input {
 }
 .plan-feature-icon { flex-shrink: 0; display: flex; }
 .plan-action { margin-top: auto; }
+.plan-action .btn { min-height: 44px; }
 .plan-btn-free {
   width: 100%;
   justify-content: center;
@@ -1538,10 +1727,37 @@ input.input {
   .pricing-grid {
     grid-template-columns: 1fr;
     max-width: 420px;
+    width: 100%;
+    margin-inline: auto;
   }
   .plan-featured {
     transform: none;
     order: -1;
+  }
+}
+
+@media (max-width: 380px) {
+  .main {
+    padding-inline: 12px;
+  }
+  .sidebar {
+    padding-inline: 12px;
+  }
+  .stats {
+    column-gap: 0;
+  }
+  .stat-label {
+    font-size: 12px;
+  }
+  .field {
+    padding: 12px;
+  }
+  .lb-tabs .seg {
+    font-size: 11px;
+    padding-inline: 4px;
+  }
+  .badges-grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

@@ -1,7 +1,7 @@
 // DSA by Shradha Didi & Aman Bhaiya (Apna College)
 // Add a new problem:
 //   { title: "Problem Name", companies: ["Amazon", "Google"], link: "https://...", remark: "optional note" }
-// `link` overrides the default LeetCode search. `remark` and `link` are optional.
+// `link` overrides the default LeetCode problem URL derived from the title. `remark` and `link` are optional.
 
 export type Row = {
   title: string;

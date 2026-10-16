@@ -36,7 +36,10 @@ export default function Page() {
   useEffect(() => {
     const fromHash = () => {
       const h = window.location.hash.replace("#", "");
-      if (h === "leaderboard") { setView("leaderboard"); return; }
+      if (h === "leaderboard" || h === "profile" || h === "pricing") {
+        setView(h);
+        return;
+      }
       setView(TOPICS.some((t) => t.slug === h) ? h : "home");
     };
     fromHash();
@@ -64,6 +67,23 @@ export default function Page() {
         <button className="brand" onClick={() => navigate("home")}>
           DSA Sheet
         </button>
+        <nav className="primary-nav" aria-label="Main navigation">
+          {[
+            ["home", "Home"],
+            ["leaderboard", "Leaderboard"],
+            ["profile", "Profile"],
+            ["pricing", "Pricing"],
+          ].map(([destination, label]) => (
+            <button
+              key={destination}
+              className={`primary-nav-item ${view === destination ? "active" : ""}`}
+              onClick={() => navigate(destination)}
+              aria-current={view === destination ? "page" : undefined}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
         <div className="topbar-progress" aria-label="Overall progress">
           <div className="bar bar-thin" aria-hidden="true">
             <div className="bar-fill" style={{ width: `${ready ? overall : 0}%` }} />
@@ -78,17 +98,19 @@ export default function Page() {
       <div className="layout">
         <Sidebar active={view} done={done} onNavigate={navigate} />
         <main className="main">
-          {view === "leaderboard" ? (
-            <Leaderboard />
-          ) : view === "profile" ? (
-            <Profile done={done} />
-          ) : view === "pricing" ? (
-            <Pricing />
-          ) : topic ? (
-            <TopicView key={topic.slug} topic={topic} done={done} onToggle={toggle} onSetMany={setMany} />
-          ) : (
-            <Home done={done} ready={ready} onOpen={navigate} onReset={reset} />
-          )}
+          <div className="page-transition" key={view}>
+            {view === "leaderboard" ? (
+              <Leaderboard />
+            ) : view === "profile" ? (
+              <Profile done={done} />
+            ) : view === "pricing" ? (
+              <Pricing />
+            ) : topic ? (
+              <TopicView topic={topic} done={done} onToggle={toggle} onSetMany={setMany} />
+            ) : (
+              <Home done={done} ready={ready} onOpen={navigate} onReset={reset} />
+            )}
+          </div>
         </main>
       </div>
     </div>

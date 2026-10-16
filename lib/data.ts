@@ -38,7 +38,7 @@ export const TOPICS: Topic[] = SHEET.map((t, ti) => ({
         : parseCompanies(row.companies ?? ""),
       remark: row.remark,
       link: row.link,
-      leetcode: row.link ?? `https://leetcode.com/problemset/?search=${q}`,
+      leetcode: row.link ?? `https://leetcode.com/problems/${slugify(title)}/`,
       gfg: `https://www.google.com/search?q=${q}+site%3Ageeksforgeeks.org`,
     };
   }),

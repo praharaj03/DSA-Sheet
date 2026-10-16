@@ -13,40 +13,6 @@ type Props = {
 export default function Sidebar({ active, done, onNavigate }: Props) {
   return (
     <nav className="sidebar" aria-label="Topics">
-      <button
-        className={`nav-item ${active === "home" ? "active" : ""}`}
-        onClick={() => onNavigate("home")}
-        aria-current={active === "home" ? "page" : undefined}
-      >
-        <span className="nav-name">Home</span>
-      </button>
-
-      <button
-        className={`nav-item ${active === "leaderboard" ? "active" : ""}`}
-        onClick={() => onNavigate("leaderboard")}
-        aria-current={active === "leaderboard" ? "page" : undefined}
-      >
-        <span className="nav-name">🏆 Leaderboard</span>
-      </button>
-
-      <button
-        className={`nav-item ${active === "profile" ? "active" : ""}`}
-        onClick={() => onNavigate("profile")}
-        aria-current={active === "profile" ? "page" : undefined}
-      >
-        <span className="nav-name">👤 Profile</span>
-      </button>
-
-      <button
-        className={`nav-item ${active === "pricing" ? "active" : ""}`}
-        onClick={() => onNavigate("pricing")}
-        aria-current={active === "pricing" ? "page" : undefined}
-      >
-        <span className="nav-name">💎 Pricing</span>
-      </button>
-
-      <div className="nav-divider" />
-
       {TOPICS.map((t) => {
         const d = countDone(
           t.questions.map((q) => q.id),
