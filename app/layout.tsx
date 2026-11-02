@@ -10,7 +10,20 @@ const body = Instrument_Sans({ subsets: ["latin"], variable: "--font-body", disp
 export const metadata: Metadata = {
   title: "Praharaj DSA Sheet",
   description: "375 DSA questions with company logos, checkboxes and progress tracking.",
-  icons: { icon: "https://cdn-icons-png.flaticon.com/512/1005/1005141.png" },
+  keywords: ["DSA sheet", "data structures", "algorithms", "coding interview questions", "progress tracking"],
+  icons: { icon: "/icon.svg" },
+  openGraph: {
+    title: "Praharaj DSA Sheet",
+    description: "Practice 375 data structures and algorithms questions and track your progress.",
+    siteName: "Praharaj DSA Sheet",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Praharaj DSA Sheet",
+    description: "Practice DSA questions and track your coding interview preparation.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

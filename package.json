@@ -6,12 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "migrate:email-users": "node --env-file=.env.local scripts/migrate-email-users.mjs"
   },
   "dependencies": {
     "@clerk/nextjs": "^7.9.12",
     "mongoose": "^9.11.1",
-    "next": "^16.4.0",
+    "next": "^16.4.4",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "sonner": "^2.0.8"
