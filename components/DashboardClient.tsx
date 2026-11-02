@@ -1,0 +1,118 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { UserButton } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
+import Home from "@/components/Home";
+import Sidebar from "@/components/Sidebar";
+import TopicView from "@/components/TopicView";
+import Leaderboard from "@/components/Leaderboard";
+import UsernameSetup from "@/components/UsernameSetup";
+import Profile from "@/components/Profile";
+import Pricing from "@/components/Pricing";
+import { TOPICS, TOTAL, pct } from "@/lib/data";
+import { useProgress } from "@/lib/useProgress";
+
+export default function DashboardClient() {
+  const { isLoaded, isSignedIn } = useAuth();
+  const { done, ready, toggle, setMany, reset } = useProgress();
+  const [view, setView] = useState("home");
+  const [userReady, setUserReady] = useState(false); // has username
+  const [checkingUser, setCheckingUser] = useState(true);
+
+  // Check if user has a username
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
+    fetch("/api/user")
+      .then((r) => r.json())
+      .then(({ user }) => {
+        setUserReady(!!user);
+        setCheckingUser(false);
+      })
+      .catch(() => setCheckingUser(false));
+  }, [isLoaded, isSignedIn]);
+
+  // Restore view from URL hash
+  useEffect(() => {
+    const fromHash = () => {
+      const h = window.location.hash.replace("#", "");
+      if (h === "leaderboard" || h === "profile" || h === "pricing") {
+        setView(h);
+        return;
+      }
+      setView(TOPICS.some((t) => t.slug === h) ? h : "home");
+    };
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    return () => window.removeEventListener("hashchange", fromHash);
+  }, []);
+
+  const navigate = useCallback((next: string) => {
+    window.location.hash = next === "home" ? "" : next;
+    setView(next);
+    window.scrollTo({ top: 0 });
+  }, []);
+
+  const topic = TOPICS.find((t) => t.slug === view);
+  const overall = pct(done.size, TOTAL);
+
+  if (!isLoaded || checkingUser) return null;
+
+  // Show username setup if not set
+  if (!userReady) return <UsernameSetup onDone={() => setUserReady(true)} />;
+
+  return (
+    <div className="shell">
+      <header className="topbar">
+        <button className="brand" onClick={() => navigate("home")}>
+          DSA Sheet
+        </button>
+        <nav className="primary-nav" aria-label="Main navigation">
+          {[
+            ["home", "Home"],
+            ["leaderboard", "Leaderboard"],
+            ["profile", "Profile"],
+            ["pricing", "Pricing"],
+          ].map(([destination, label]) => (
+            <button
+              key={destination}
+              className={`primary-nav-item ${view === destination ? "active" : ""}`}
+              onClick={() => navigate(destination)}
+              aria-current={view === destination ? "page" : undefined}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
+        <div className="topbar-progress" aria-label="Overall progress">
+          <div className="bar bar-thin" aria-hidden="true">
+            <div className="bar-fill" style={{ width: `${ready ? overall : 0}%` }} />
+          </div>
+          <span className="topbar-text">
+            {ready ? done.size : 0}/{TOTAL} · {ready ? overall : 0}%
+          </span>
+        </div>
+        <UserButton />
+      </header>
+
+      <div className="layout">
+        <Sidebar active={view} done={done} onNavigate={navigate} />
+        <main className="main">
+          <div className="page-transition" key={view}>
+            {view === "leaderboard" ? (
+              <Leaderboard />
+            ) : view === "profile" ? (
+              <Profile done={done} />
+            ) : view === "pricing" ? (
+              <Pricing />
+            ) : topic ? (
+              <TopicView topic={topic} done={done} onToggle={toggle} onSetMany={setMany} />
+            ) : (
+              <Home done={done} ready={ready} onOpen={navigate} onReset={reset} />
+            )}
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
