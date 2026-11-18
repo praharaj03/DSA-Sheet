@@ -1,9 +1,15 @@
 import { SignIn } from "@clerk/nextjs";
+import AuthLayout from "@/components/AuthLayout";
 
 export default function Page() {
   return (
-    <div style={{ display: "grid", placeContent: "center", minHeight: "100vh" }}>
-      <SignIn />
-    </div>
+    <AuthLayout>
+      <SignIn
+        path="/sign-in"
+        routing="path"
+        signUpUrl="/sign-up"
+        fallbackRedirectUrl="/"
+      />
+    </AuthLayout>
   );
 }

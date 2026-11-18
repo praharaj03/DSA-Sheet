@@ -1,5 +1,5 @@
 import { SHEET } from "../data/sheet";
-import { parseCompanies, type Company } from "./companies";
+import { getCompany, type Company } from "./companies";
 
 export type Question = {
   id: string;
@@ -20,7 +20,11 @@ export type Topic = {
 };
 
 const slugify = (s: string) =>
-  s.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  s
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 
 export const TOPICS: Topic[] = SHEET.map((t, ti) => ({
   name: t.name,
@@ -30,25 +34,45 @@ export const TOPICS: Topic[] = SHEET.map((t, ti) => ({
     const title = row.title;
     const q = encodeURIComponent(title);
     return {
-      id: `${ti}-${qi}`,
+      id: row.id,
       n: qi + 1,
       title,
-      companies: Array.isArray(row.companies)
-        ? parseCompanies(row.companies.join(" "))
-        : parseCompanies(row.companies ?? ""),
+      companies: [
+        ...new Map(
+          row.companies
+            .map(getCompany)
+            .map((company) => [company.name, company]),
+        ).values(),
+      ],
       remark: row.remark,
       link: row.link,
-      leetcode: row.link ?? `https://leetcode.com/problems/${slugify(title)}/`,
+      leetcode: `https://leetcode.com/problemset/?search=${q}`,
       gfg: `https://www.google.com/search?q=${q}+site%3Ageeksforgeeks.org`,
     };
   }),
 }));
 
-export const ALL_QUESTIONS: (Question & { topic: Topic })[] = TOPICS.flatMap((t) =>
-  t.questions.map((q) => ({ ...q, topic: t }))
+export const ALL_QUESTIONS: (Question & { topic: Topic })[] = TOPICS.flatMap(
+  (t) => t.questions.map((q) => ({ ...q, topic: t })),
 );
 
 export const TOTAL = ALL_QUESTIONS.length;
+export const QUESTION_IDS = new Set(
+  ALL_QUESTIONS.map((question) => question.id),
+);
+
+export function validQuestionIds(value: unknown): string[] {
+  return Array.isArray(value)
+    ? [
+        ...new Set(
+          value.filter(
+            (id): id is string =>
+              typeof id === "string" && QUESTION_IDS.has(id),
+          ),
+        ),
+      ]
+    : [];
+}
 
 export type CompanyStat = { company: Company; ids: string[] };
 
@@ -65,6 +89,8 @@ export const COMPANY_STATS: CompanyStat[] = (() => {
   return Array.from(m.values()).sort((a, b) => b.ids.length - a.ids.length);
 })();
 
-export const pct = (done: number, total: number) => (total ? Math.round((done / total) * 100) : 0);
+export const pct = (done: number, total: number) =>
+  total ? Math.round((done / total) * 100) : 0;
 
-export const countDone = (ids: string[], done: Set<string>) => ids.reduce((n, id) => n + (done.has(id) ? 1 : 0), 0);
+export const countDone = (ids: string[], done: Set<string>) =>
+  ids.reduce((n, id) => n + (done.has(id) ? 1 : 0), 0);

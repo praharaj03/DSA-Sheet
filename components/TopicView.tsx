@@ -5,9 +5,13 @@ import { useMemo, useState } from "react";
 import { countDone, pct, type Topic } from "@/lib/data";
 import CompanyLogo from "./CompanyLogo";
 import { toast } from "sonner";
+import ConfirmDialog from "./ConfirmDialog";
+import Icon from "./Icon";
+import { TopicIcon } from "@/lib/topicIcons";
 
 type Props = {
   topic: Topic;
+  initialQuery?: string;
   done: Set<string>;
   onToggle: (id: string) => void;
   onSetMany: (ids: string[], value: boolean) => void;
@@ -18,8 +22,15 @@ type Sort = "default" | "company" | "title" | "done-last";
 
 const MAX_LOGOS = 6;
 
-export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
-  const [query, setQuery] = useState("");
+export default function TopicView({
+  topic,
+  initialQuery = "",
+  done,
+  onToggle,
+  onSetMany,
+}: Props) {
+  const [query, setQuery] = useState(initialQuery);
+  const [confirmClear, setConfirmClear] = useState(false);
   const [filter, setFilter] = useState<Filter>("all");
   const [company, setCompany] = useState("");
   const [sort, setSort] = useState<Sort>("default");
@@ -31,8 +42,11 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
 
   const companyOptions = useMemo(() => {
     const m = new Map<string, number>();
-    for (const q of topic.questions) for (const c of q.companies) m.set(c.name, (m.get(c.name) ?? 0) + 1);
-    return Array.from(m.entries()).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    for (const q of topic.questions)
+      for (const c of q.companies) m.set(c.name, (m.get(c.name) ?? 0) + 1);
+    return Array.from(m.entries()).sort(
+      (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+    );
   }, [topic]);
 
   const rows = useMemo(() => {
@@ -40,13 +54,15 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
       if (filter === "done" && !done.has(q.id)) return false;
       if (filter === "pending" && done.has(q.id)) return false;
       if (company && !q.companies.some((c) => c.name === company)) return false;
-      if (query && !q.title.toLowerCase().includes(query.trim().toLowerCase())) return false;
+      if (query && !q.title.toLowerCase().includes(query.trim().toLowerCase()))
+        return false;
       return true;
     });
     return [...filtered].sort((a, b) => {
       if (sort === "title") return a.title.localeCompare(b.title);
       if (sort === "company") return b.companies.length - a.companies.length;
-      if (sort === "done-last") return (done.has(a.id) ? 1 : 0) - (done.has(b.id) ? 1 : 0);
+      if (sort === "done-last")
+        return (done.has(a.id) ? 1 : 0) - (done.has(b.id) ? 1 : 0);
       return a.n - b.n;
     });
   }, [topic, filter, company, query, sort, done]);
@@ -67,6 +83,10 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
   return (
     <div className="topic" style={hueVar(topic.hue)}>
       <header className="topic-head">
+        <span className="eyebrow">
+          <TopicIcon slug={topic.slug} size={16} /> The study path ·{" "}
+          {topic.questions.length} problems
+        </span>
         <div className="topic-title-row">
           <h1 className="title">{topic.name}</h1>
           <div className="topic-pct">
@@ -74,6 +94,10 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
             <span className="muted">completed</span>
           </div>
         </div>
+        <p className="subtitle">
+          Build confidence one problem at a time. Mark a question solved when
+          you're ready.
+        </p>
 
         <div
           className="bar bar-lg"
@@ -149,10 +173,23 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
         </select>
 
         <div className="bulk">
-          <button className="link-btn" onClick={() => onSetMany(ids, false)} disabled={doneCount === 0}>
-            Clear all
+          <button
+            className="link-btn danger"
+            onClick={() => setConfirmClear(true)}
+            disabled={doneCount === 0}
+          >
+            Reset topic
           </button>
         </div>
+      </div>
+
+      <div className="question-summary">
+        <span role="status">
+          Showing <strong>{rows.length}</strong> of {total} questions
+        </span>
+        <span>
+          Practice links open in a new tab <Icon name="external" size={12} />
+        </span>
       </div>
 
       <div className="table-scroll">
@@ -203,16 +240,35 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
                           +{extra}
                         </span>
                       )}
-                      {q.companies.length === 0 && <span className="faint">-</span>}
+                      {q.companies.length === 0 && (
+                        <span className="faint">-</span>
+                      )}
                     </div>
                   </td>
-                  <td className="col-remark">{q.remark ? <span className="remark">{q.remark}</span> : null}</td>
+                  <td className="col-remark">
+                    {q.remark ? (
+                      <span className="remark">{q.remark}</span>
+                    ) : null}
+                  </td>
                   <td className="col-links">
-                    <a className="pill-link" href={q.leetcode} target="_blank" rel="noopener noreferrer">
-                      LeetCode
+                    <a
+                      className="pill-link"
+                      href={q.link ?? q.leetcode}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${q.link ? "Practice" : "Search LeetCode for"} ${q.title} (opens in a new tab)`}
+                    >
+                      {q.link ? "Practice" : "LeetCode"}{" "}
+                      <Icon name="external" size={11} />
                     </a>
-                    <a className="pill-link" href={q.gfg} target="_blank" rel="noopener noreferrer">
-                      GFG
+                    <a
+                      className="pill-link"
+                      href={q.gfg}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Search GFG for ${q.title} (opens in a new tab)`}
+                    >
+                      GFG <Icon name="external" size={11} />
                     </a>
                   </td>
                 </tr>
@@ -223,10 +279,32 @@ export default function TopicView({ topic, done, onToggle, onSetMany }: Props) {
 
         {rows.length === 0 && (
           <div className="empty">
-            No questions match. Clear the search or switch the status filter to see more.
+            <Icon name="search" size={28} />
+            <h3>No questions match</h3>
+            <p>Try another search or reset your filters.</p>
+            <button
+              className="btn"
+              onClick={() => {
+                setQuery("");
+                setCompany("");
+                setFilter("all");
+                setSort("default");
+              }}
+            >
+              Clear filters
+            </button>
           </div>
         )}
       </div>
+      {confirmClear && (
+        <ConfirmDialog
+          title={`Reset ${topic.name}?`}
+          description={`This will clear ${doneCount} solved questions in this topic, including any hidden by your filters. This cannot be undone.`}
+          confirmLabel="Reset topic"
+          onConfirm={() => onSetMany(ids, false)}
+          onClose={() => setConfirmClear(false)}
+        />
+      )}
     </div>
   );
 }

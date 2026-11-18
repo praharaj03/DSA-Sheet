@@ -5,3 +5,10 @@ next-env.d.ts
 tsconfig.tsbuildinfo
 .vscode
 .env*.local
+.env
+.env.*
+!.env.example
+.qa
+test-results
+playwright-report
+*.log

@@ -1,60 +1,87 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
+import { fetchJSON } from "@/lib/client";
+import { normalizeUsername } from "@/lib/profile";
+import Icon from "./Icon";
 
-type Props = { onDone: () => void };
-
-export default function UsernameSetup({ onDone }: Props) {
+export default function UsernameSetup({ onDone }: { onDone: () => void }) {
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const clean = value.trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
-
-  const submit = async () => {
+  const username = normalizeUsername(value);
+  const submit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!username || loading) return;
     setError("");
     setLoading(true);
-    const res = await fetch("/api/user", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: clean }),
-    });
-    const data = await res.json();
-    setLoading(false);
-    if (!res.ok) { setError(data.error); return; }
-    onDone();
+    try {
+      await fetchJSON("/api/user", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username }),
+      });
+      onDone();
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Couldn't save. Please try again.",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
-
   return (
-    <div className="setup-overlay">
-      <div className="setup-card">
-        <div className="setup-emoji">👋</div>
-        <h1 className="setup-title">Pick your username</h1>
-        <p className="setup-sub">This shows on the leaderboard. Lowercase letters, numbers and _ only. Can't be changed later.</p>
+    <main className="full-state">
+      <form className="setup-card" onSubmit={submit}>
+        <span className="brand-mark">&lt;/&gt;</span>
+        <span className="eyebrow">Make yourself at home</span>
+        <h1 className="setup-title">Your journey starts here.</h1>
+        <p className="setup-sub">
+          Choose a username for your profile and the community leaderboard. You
+          can update it later in your profile.
+        </p>
+        <label className="edit-label" htmlFor="setup-username">
+          Your username
+        </label>
         <div className="setup-row">
           <span className="setup-at">@</span>
           <input
+            id="setup-username"
             className="input setup-input"
             placeholder="your_username"
+            autoComplete="username"
+            aria-describedby="username-help"
+            aria-invalid={!!error}
             value={value}
             maxLength={20}
-            onChange={(e) => { setValue(e.target.value); setError(""); }}
-            onKeyDown={(e) => e.key === "Enter" && submit()}
+            onChange={(event) => {
+              setValue(event.target.value);
+              setError("");
+            }}
             autoFocus
           />
         </div>
-        {clean && clean !== value.trim().toLowerCase() && (
-          <p className="setup-hint muted">Will be saved as: @{clean}</p>
+        <p className="setup-hint muted" id="username-help">
+          3–20 letters, numbers, or underscores.
+        </p>
+        {error && (
+          <p className="setup-error" role="alert">
+            {error}
+          </p>
         )}
-        {error && <p className="setup-error">{error}</p>}
         <button
           className="btn btn-primary setup-btn"
-          onClick={submit}
-          disabled={clean.length < 3 || loading}
+          disabled={!username || loading}
         >
-          {loading ? "Saving…" : "Continue →"}
+          {loading ? "Creating your workspace…" : "Let's get started"}
+          <Icon name="arrow" size={17} />
         </button>
-      </div>
-    </div>
+        <span className="setup-hint muted">
+          Your progress. Your pace. All in one place.
+        </span>
+      </form>
+    </main>
   );
 }

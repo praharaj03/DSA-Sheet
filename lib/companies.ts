@@ -120,13 +120,21 @@ const ALIASES: Record<string, string> = {
 };
 
 const MAP = new Map<string, Company>();
-for (const [name, domain] of LIST) MAP.set(name.toLowerCase(), { name, domain });
+for (const [name, domain] of LIST)
+  MAP.set(name.toLowerCase(), { name, domain });
 for (const [alias, name] of Object.entries(ALIASES)) {
   const c = MAP.get(name.toLowerCase());
   if (c) MAP.set(alias, c);
 }
 
 const MAX_WORDS = 3;
+
+/** Preserve source-sheet companies even when their logo domain is unknown. */
+export function getCompany(name: string): Company {
+  return (
+    MAP.get(name.trim().toLowerCase()) ?? { name: name.trim(), domain: "" }
+  );
+}
 
 /** Turns the PDF's company text ("Amazon + Goldman Sachs + Ola Cabs") into a list of companies. */
 export function parseCompanies(raw: string): Company[] {
@@ -137,7 +145,10 @@ export function parseCompanies(raw: string): Company[] {
   while (i < words.length) {
     let hit = false;
     for (let n = Math.min(MAX_WORDS, words.length - i); n >= 1; n--) {
-      const key = words.slice(i, i + n).join(" ").toLowerCase();
+      const key = words
+        .slice(i, i + n)
+        .join(" ")
+        .toLowerCase();
       const c = MAP.get(key);
       if (c) {
         if (!seen.has(c.name)) {

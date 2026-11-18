@@ -3,13 +3,25 @@
 import { useState } from "react";
 import { logoUrl, type Company } from "@/lib/companies";
 
-export default function CompanyLogo({ company, size = 22 }: { company: Company; size?: number }) {
+export default function CompanyLogo({
+  company,
+  size = 22,
+}: {
+  company: Company;
+  size?: number;
+}) {
   const [failed, setFailed] = useState(false);
   const style = { width: size, height: size };
 
   if (!company.domain || failed) {
     return (
-      <span className="logo logo-fallback" style={{ ...style, fontSize: size * 0.48 }} title={company.name}>
+      <span
+        className="logo logo-fallback"
+        style={{ ...style, fontSize: size * 0.48 }}
+        title={company.name}
+        role="img"
+        aria-label={company.name}
+      >
         {company.name.charAt(0).toUpperCase()}
       </span>
     );
