@@ -1,9 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import "./globals.css";
 import "./workspace-polish.css";
+
+export const viewport: Viewport = { themeColor: "#000000" };
 
 const display = localFont({
   src: "../public/fonts/bricolage-grotesque.woff2",
@@ -59,17 +61,19 @@ export default function RootLayout({
       signUpFallbackRedirectUrl="/"
       appearance={{
         variables: {
-          colorPrimary: "#c3ed98",
-          colorBackground: "#181c19",
-          colorForeground: "#edf1e9",
-          colorMutedForeground: "#a1aca0",
-          colorInput: "#101311",
-          colorInputForeground: "#edf1e9",
+          colorPrimary: "#96e8ad",
+          colorBackground: "#13231a",
+          colorForeground: "#eef8ee",
+          colorMutedForeground: "#a3bda9",
+          colorInput: "#000000",
+          colorInputForeground: "#eef8ee",
+          colorNeutral: "#eef8ee",
+          colorBorder: "#3b5c46",
           borderRadius: "0.75rem",
         },
         elements: {
-          formButtonPrimary: { color: "#1d2a16" },
-          footerActionLink: { color: "#c3ed98" },
+          formButtonPrimary: { color: "#112d1b" },
+          footerActionLink: { color: "#96e8ad" },
         },
       }}
     >

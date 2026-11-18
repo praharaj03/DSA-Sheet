@@ -30,7 +30,7 @@
 
 ## Experience improvements
 
-The app now has a consistent charcoal and sage workspace, clearer typography, topic cards, a continue-practicing panel, search across all questions and companies, CSV exports, explicit save status, polished onboarding, and responsive profile and community views.
+The app now has a consistent black workspace with forest green cards and mint accents, clearer typography, topic cards, a continue-practicing panel, search across all questions and companies, CSV exports, explicit save status, polished onboarding, and responsive profile and community views.
 
 ## Verification
 

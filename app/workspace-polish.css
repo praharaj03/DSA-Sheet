@@ -1,4 +1,9 @@
-/* The existing charcoal and sage palette, with more depth and a clearer focal point. */
+/* A layered forest green and mint palette, with more depth and a clearer focal point. */
+[data-sonner-toast][data-type="success"] {
+  --success-bg: #153824;
+  --success-border: #2e6b43;
+  --success-text: #c3f1cd;
+}
 .hero-copy {
   min-width: 0;
   position: relative;
@@ -9,8 +14,8 @@
   align-items: center;
   gap: 9px;
   padding: 7px 10px;
-  background: #c3ed9809;
-  border: 1px solid #c3ed9824;
+  background: #96e8ad09;
+  border: 1px solid #96e8ad24;
   border-radius: 6px;
   color: var(--accent);
   font-size: 8px;
@@ -41,7 +46,7 @@
   left: 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, var(--accent), #c3ed9810);
+  background: linear-gradient(90deg, var(--accent), #96e8ad10);
   border-radius: 50%;
   transform: rotate(-1.5deg);
 }
@@ -63,13 +68,13 @@
 }
 .hero-start {
   box-shadow:
-    0 4px 18px #c3ed9819,
-    inset 0 1px #edf1e94d;
+    0 4px 18px #96e8ad19,
+    inset 0 1px #eef8ee4d;
 }
 .hero-actions .export-btn {
   margin: 0;
-  border-color: #a1aca02e;
-  background: #10131166;
+  border-color: #a3bda92e;
+  background: #00000066;
 }
 .hero-footnote {
   display: flex;
@@ -93,7 +98,7 @@
   box-sizing: content-box;
   padding: 7px;
   margin-right: -6px;
-  border: 2px solid #181c19;
+  border: 2px solid #13231a;
   border-radius: 50%;
   color: var(--accent);
   background: var(--panel-2);
@@ -111,8 +116,8 @@
   z-index: -1;
   opacity: 0.45;
   background-image:
-    linear-gradient(#a1aca00c 1px, transparent 1px),
-    linear-gradient(90deg, #a1aca00c 1px, transparent 1px);
+    linear-gradient(#a3bda90c 1px, transparent 1px),
+    linear-gradient(90deg, #a3bda90c 1px, transparent 1px);
   background-size: 28px 28px;
   mask-image: radial-gradient(ellipse, black, transparent 72%);
 }
@@ -141,7 +146,7 @@
   top: 50%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
-  background: radial-gradient(circle, #c3ed9808, transparent 65%);
+  background: radial-gradient(circle, #96e8ad08, transparent 65%);
 }
 .orbit-svg {
   display: block;
@@ -150,26 +155,26 @@
   overflow: visible;
 }
 .orbit-outer {
-  stroke: #c3ed981c;
+  stroke: #96e8ad1c;
   stroke-width: 0.8;
 }
 .orbit-guide {
-  stroke: #c3ed9824;
+  stroke: #96e8ad24;
   stroke-width: 1;
 }
 .orbit-track {
-  stroke: #34462b;
+  stroke: #2c5339;
   stroke-width: 6;
 }
 .orbit-value {
   stroke: var(--accent);
   stroke-width: 6;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 5px #c3ed9840);
+  filter: drop-shadow(0 0 5px #96e8ad40);
   transition: stroke-dashoffset 0.5s ease;
 }
 .orbit-cross {
-  stroke: #c3ed9840;
+  stroke: #96e8ad40;
   stroke-width: 1;
 }
 .orbit-center {
@@ -208,7 +213,7 @@
   margin-top: 12px;
   padding: 3px 8px;
   border-radius: 4px;
-  background: #c3ed9808;
+  background: #96e8ad08;
   color: var(--accent);
 }
 .orbit-solved > span {
@@ -220,9 +225,9 @@
   height: 36px;
   display: inline-grid;
   place-items: center;
-  border: 1px solid #c3ed9830;
+  border: 1px solid #96e8ad30;
   color: var(--accent);
-  background: linear-gradient(140deg, #2a312b, #181c19);
+  background: linear-gradient(140deg, #294533, #13231a);
   border-radius: 10px;
   box-shadow: 0 5px 15px #0003;
 }
@@ -254,13 +259,13 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  border: 1px solid #c3ed9824;
+  border: 1px solid #96e8ad24;
   border-radius: 10px;
-  background: #202621eb;
+  background: #1b3023eb;
   padding: 10px 12px;
   box-shadow:
     0 10px 25px #0003,
-    inset 0 1px #edf1e908;
+    inset 0 1px #eef8ee08;
   backdrop-filter: blur(8px);
 }
 .orbit-float > span:nth-child(2) {
@@ -281,7 +286,7 @@
   place-items: center;
   width: 29px;
   height: 29px;
-  background: #c3ed9810;
+  background: #96e8ad10;
   color: var(--accent);
   border-radius: 7px;
 }
@@ -317,9 +322,9 @@
 }
 
 .home .stat:first-child {
-  border-color: #c3ed9830;
+  border-color: #96e8ad30;
   background:
-    radial-gradient(ellipse at top right, #c3ed980b, transparent 70%),
+    radial-gradient(ellipse at top right, #96e8ad0b, transparent 70%),
     var(--panel);
 }
 .stat-icon {
@@ -327,9 +332,9 @@
   place-items: center;
   width: 30px;
   height: 30px;
-  border: 1px solid #c3ed9812;
+  border: 1px solid #96e8ad12;
   border-radius: 8px;
-  background: #c3ed9807;
+  background: #96e8ad07;
   color: var(--accent);
 }
 .stat-meter {
@@ -338,12 +343,12 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #c3ed9806;
+  background: #96e8ad06;
 }
 .stat-meter > span {
   display: block;
   height: 100%;
-  background: linear-gradient(90deg, #34462b, #c3ed9873);
+  background: linear-gradient(90deg, #2c5339, #96e8ad73);
   transition: width 0.3s;
 }
 .home .stat-value {
@@ -378,7 +383,7 @@
   font-size: 9px;
 }
 .section-heading .search-box {
-  background: #20262166;
+  background: #1b302366;
   height: 43px;
   border-radius: 10px;
 }
@@ -448,16 +453,16 @@
     color 0.2s;
 }
 .topic-card:hover .topic-card-arrow {
-  border-color: #c3ed9855;
+  border-color: #96e8ad55;
   color: var(--accent);
 }
 .topic-card:has(.topic-state-active) {
-  border-color: #c3ed982e;
+  border-color: #96e8ad2e;
 }
 .topic-library .topic-recommended {
-  border-color: #c3ed9850;
+  border-color: #96e8ad50;
   background:
-    radial-gradient(ellipse at 0 0, #c3ed9810, transparent 80%), var(--panel);
+    radial-gradient(ellipse at 0 0, #96e8ad10, transparent 80%), var(--panel);
 }
 .topic-library .topic-recommended .topic-state {
   color: var(--accent);
@@ -467,8 +472,8 @@
 }
 .topic-library .topic-recommended .topic-card-arrow {
   color: var(--accent);
-  border-color: #c3ed9840;
-  background: #c3ed980a;
+  border-color: #96e8ad40;
+  background: #96e8ad0a;
 }
 .field {
   padding-top: 18px;
@@ -480,7 +485,7 @@
     background 0.2s;
 }
 .company-row:hover {
-  border-color: #c3ed9833;
+  border-color: #96e8ad33;
   background: var(--panel-2);
 }
 .company-row .logo {
@@ -494,21 +499,21 @@
   position: absolute;
   width: 180px;
   height: 180px;
-  border: 1px solid #c3ed980b;
+  border: 1px solid #96e8ad0b;
   border-radius: 50%;
   right: -75px;
   top: -65px;
   box-shadow:
-    0 0 0 24px #c3ed9803,
-    0 0 0 48px #c3ed9802;
+    0 0 0 24px #96e8ad03,
+    0 0 0 48px #96e8ad02;
   pointer-events: none;
 }
 .topic-head {
   padding: 28px;
-  border: 1px solid #c3ed9828;
+  border: 1px solid #96e8ad28;
   border-radius: 18px;
   background:
-    radial-gradient(ellipse at top left, #c3ed980b, transparent 75%),
+    radial-gradient(ellipse at top left, #96e8ad0b, transparent 75%),
     var(--panel);
 }
 .topic-title-lockup {
@@ -523,51 +528,51 @@
   flex-shrink: 0;
   width: 57px;
   height: 57px;
-  border: 1px solid #c3ed9833;
-  background: #c3ed9809;
+  border: 1px solid #96e8ad33;
+  background: #96e8ad09;
   border-radius: 14px;
   color: var(--accent);
-  box-shadow: inset 0 1px #c3ed9810;
+  box-shadow: inset 0 1px #96e8ad10;
 }
 .topic-title-lockup .title {
   font-size: clamp(29px, 3.2vw, 45px);
 }
 .topic-pct {
   padding: 10px 16px;
-  background: #c3ed9807;
-  border: 1px solid #c3ed9824;
+  background: #96e8ad07;
+  border: 1px solid #96e8ad24;
   border-radius: 12px;
 }
 .topic-head .bar-lg {
-  background: #c3ed980d;
+  background: #96e8ad0d;
 }
 .q-table .check:checked {
-  box-shadow: 0 0 12px #c3ed9820;
+  box-shadow: 0 0 12px #96e8ad20;
 }
 .profile-card {
   background:
-    radial-gradient(ellipse at 0 0, #c3ed980d, transparent 70%), var(--panel);
-  border-color: #c3ed9828;
-  box-shadow: inset 0 1px #edf1e906;
+    radial-gradient(ellipse at 0 0, #96e8ad0d, transparent 70%), var(--panel);
+  border-color: #96e8ad28;
+  box-shadow: inset 0 1px #eef8ee06;
 }
 .profile-avatar {
-  box-shadow: 0 0 0 5px #c3ed9805;
+  box-shadow: 0 0 0 5px #96e8ad05;
 }
 .badge-card.earned {
   background:
-    radial-gradient(ellipse at top, #c3ed9809, transparent 75%), var(--panel);
+    radial-gradient(ellipse at top, #96e8ad09, transparent 75%), var(--panel);
 }
 .membership-card {
   position: relative;
   box-shadow:
     0 20px 60px #0002,
-    inset 0 1px #c3ed9812;
+    inset 0 1px #96e8ad12;
 }
 .membership-plan {
   position: relative;
   background: radial-gradient(
     ellipse at bottom left,
-    #c3ed9810,
+    #96e8ad10,
     transparent 65%
   );
 }
@@ -576,11 +581,11 @@
 }
 .topbar .brand-mark {
   box-shadow:
-    inset 0 1px #c3ed9810,
-    0 0 22px #c3ed9805;
+    inset 0 1px #96e8ad10,
+    0 0 22px #96e8ad05;
 }
 .primary-nav-item.active {
-  box-shadow: inset 0 1px #c3ed9808;
+  box-shadow: inset 0 1px #96e8ad08;
 }
 
 @media (min-width: 1500px) {
