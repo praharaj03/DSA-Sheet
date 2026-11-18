@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import "./globals.css";
+import "./workspace-polish.css";
 
 const display = localFont({
   src: "../public/fonts/bricolage-grotesque.woff2",

@@ -88,7 +88,12 @@ export default function TopicView({
           {topic.questions.length} problems
         </span>
         <div className="topic-title-row">
-          <h1 className="title">{topic.name}</h1>
+          <div className="topic-title-lockup">
+            <span className="topic-heading-icon">
+              <TopicIcon slug={topic.slug} size={29} />
+            </span>
+            <h1 className="title">{topic.name}</h1>
+          </div>
           <div className="topic-pct">
             <span className="topic-pct-num">{p}%</span>
             <span className="muted">completed</span>

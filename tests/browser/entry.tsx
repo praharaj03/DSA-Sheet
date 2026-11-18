@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { Toaster } from "sonner";
 import DashboardClient from "../../components/DashboardClient";
 import "../../app/globals.css";
+import "../../app/workspace-polish.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

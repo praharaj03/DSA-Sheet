@@ -15,6 +15,7 @@ import { TopicIcon } from "@/lib/topicIcons";
 import CompanyLogo from "./CompanyLogo";
 import ConfirmDialog from "./ConfirmDialog";
 import Icon from "./Icon";
+import ProgressOrbit from "./ProgressOrbit";
 
 type Props = {
   done: Set<string>;
@@ -86,8 +87,11 @@ export default function Home({ done, onOpen, onReset }: Props) {
   return (
     <div className="home">
       <header className="home-head">
-        <div>
-          <span className="eyebrow">A little better, every day</span>
+        <div className="hero-copy">
+          <span className="hero-badge">
+            <span className="status-dot" /> YOUR SPACE TO GET BETTER{" "}
+            <Icon name="spark" size={13} />
+          </span>
           <h1 className="title">
             Your next chapter
             <br />
@@ -98,11 +102,35 @@ export default function Home({ done, onOpen, onReset }: Props) {
             <br className="desktop-break" /> find your rhythm, and make every
             session count.
           </p>
+          <div className="hero-actions">
+            <button
+              className="btn btn-primary hero-start"
+              onClick={() => onOpen(nextTopic?.topic.slug ?? TOPICS[0].slug)}
+            >
+              Open your study path <Icon name="arrow" size={18} />
+            </button>
+            <button className="btn export-btn" onClick={exportProgress}>
+              <Icon name="download" size={16} />
+              Export progress
+            </button>
+          </div>
+          <div className="hero-footnote">
+            <span className="hero-topic-stack" aria-hidden="true">
+              <TopicIcon slug="arrays" size={15} />
+              <TopicIcon slug="graphs" size={15} />
+              <TopicIcon slug="binary-trees" size={15} />
+            </span>
+            <span>
+              <strong>{TOPICS.length} essential topics.</strong> A foundation
+              that stays with you.
+            </span>
+          </div>
         </div>
-        <button className="btn export-btn" onClick={exportProgress}>
-          <Icon name="download" size={16} />
-          Export progress
-        </button>
+        <ProgressOrbit
+          solved={totalDone}
+          total={TOTAL}
+          topics={TOPICS.length}
+        />
       </header>
 
       <section className="stats" aria-label="Overall stats">
@@ -112,30 +140,36 @@ export default function Home({ done, onOpen, onReset }: Props) {
             label: "Sheet completed",
             icon: "grid" as const,
             note: "Your progress, at a glance",
+            progress: overall,
           },
           {
             value: totalDone,
             label: "Problems solved",
             icon: "check" as const,
             note: `${TOTAL - totalDone} opportunities ahead`,
+            progress: overall,
           },
           {
             value: `${topicsFinished}`,
             label: "Topics mastered",
             icon: "book" as const,
             note: `Across ${TOPICS.length} core topics`,
+            progress: pct(topicsFinished, TOPICS.length),
           },
           {
             value: TOTAL - totalDone,
-            label: "Up next",
+            label: "Still to explore",
             icon: "arrow" as const,
             note: "One step at a time",
+            progress: pct(TOTAL - totalDone, TOTAL),
           },
         ].map((stat) => (
           <div className="stat" key={stat.label}>
             <div className="stat-top">
               <span className="stat-label">{stat.label}</span>
-              <Icon name={stat.icon} size={16} />
+              <span className="stat-icon">
+                <Icon name={stat.icon} size={17} />
+              </span>
             </div>
             <span className="stat-value">
               {stat.value}
@@ -144,6 +178,9 @@ export default function Home({ done, onOpen, onReset }: Props) {
               )}
             </span>
             <span className="stat-note">{stat.note}</span>
+            <span className="stat-meter" aria-hidden="true">
+              <span style={{ width: `${stat.progress}%` }} />
+            </span>
           </div>
         ))}
       </section>
@@ -195,10 +232,12 @@ export default function Home({ done, onOpen, onReset }: Props) {
         </button>
       </section>
 
-      <section aria-label="Browse topics">
+      <section className="topic-library" aria-label="Browse topics">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">The study path</span>
+            <span className="eyebrow">
+              <span className="section-number">01</span> The study path
+            </span>
             <h2 className="h2">Small steps. Solid foundations.</h2>
             <p className="muted">
               Work through the essentials, in your own order.
@@ -273,11 +312,14 @@ export default function Home({ done, onOpen, onReset }: Props) {
           <div className="topic-grid">
             {topicStats.map(({ topic, solved, total, percent }, index) => (
               <button
-                className={`topic-card ${percent === 100 ? "topic-complete" : ""}`}
+                className={`topic-card ${percent === 100 ? "topic-complete" : ""} ${nextTopic?.topic.slug === topic.slug ? "topic-recommended" : ""}`}
                 key={topic.slug}
                 style={hueVar(topic.hue)}
                 onClick={() => onOpen(topic.slug)}
               >
+                <span className="topic-watermark" aria-hidden="true">
+                  <TopicIcon slug={topic.slug} size={100} />
+                </span>
                 <div className="topic-card-top">
                   <span className="topic-card-icon">
                     <TopicIcon slug={topic.slug} size={22} />
@@ -286,14 +328,31 @@ export default function Home({ done, onOpen, onReset }: Props) {
                     {percent === 100 ? (
                       <Icon name="check" size={17} />
                     ) : (
-                      String(index + 1).padStart(2, "0")
+                      <>
+                        {String(index + 1).padStart(2, "0")}
+                        <span> / {TOPICS.length}</span>
+                      </>
                     )}
                   </span>
                 </div>
+                <span
+                  className={`topic-state ${solved > 0 ? "topic-state-active" : ""}`}
+                >
+                  <span />
+                  {percent === 100
+                    ? "Completed"
+                    : nextTopic?.topic.slug === topic.slug
+                      ? totalDone
+                        ? "Pick up here"
+                        : "A great place to start"
+                      : solved > 0
+                        ? "In progress"
+                        : "Ready when you are"}
+                </span>
                 <h3>{topic.name}</h3>
                 <div className="topic-card-count">
                   <span>{total} problems</span>
-                  <span>
+                  <span className="topic-card-cta">
                     {solved > 0 ? `${percent}%` : "Start learning"}
                     <Icon name="arrow" size={13} />
                   </span>
@@ -309,7 +368,12 @@ export default function Home({ done, onOpen, onReset }: Props) {
                   <div className="bar-fill" style={{ width: `${percent}%` }} />
                 </div>
                 <span className="topic-card-bottom">
-                  {solved} of {total} solved
+                  <span>
+                    {solved} of {total} solved
+                  </span>
+                  <span className="topic-card-arrow">
+                    <Icon name="arrow" size={14} />
+                  </span>
                 </span>
               </button>
             ))}
@@ -320,7 +384,9 @@ export default function Home({ done, onOpen, onReset }: Props) {
       <section className="progress-map" aria-label="Question completion map">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">See how far you've come</span>
+            <span className="eyebrow">
+              <span className="section-number">02</span> See how far you've come
+            </span>
             <h2 className="h2">Every problem leaves a mark.</h2>
           </div>
           <span className="map-legend">
@@ -362,7 +428,10 @@ export default function Home({ done, onOpen, onReset }: Props) {
       <section aria-label="Company practice coverage">
         <div className="section-heading">
           <div>
-            <span className="eyebrow">Practice with a destination</span>
+            <span className="eyebrow">
+              <span className="section-number">03</span> Practice with a
+              destination
+            </span>
             <h2 className="h2">Your company shortlist.</h2>
             <p className="muted">
               Coverage of company-tagged questions in this sheet.
